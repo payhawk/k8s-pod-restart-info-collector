@@ -263,6 +263,12 @@ func (c *Controller) handlePod(pod *v1.Pod) error {
 		if err != nil {
 			return err
 		}
+
+		lastLogLine := strings.Split(containerLogs, "\n")
+		if isIgnoredErrorForPod(pod.Name, lastLogLine) {
+			continue
+		}
+
 		if containerLogs == "" {
 			containerLogs = "• No Logs Before Restart\n"
 		} else {

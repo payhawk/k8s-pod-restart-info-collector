@@ -57,6 +57,28 @@ func isIgnoredPod(name string) bool {
 	return false
 }
 
+func isIgnoredErrorForPod(podName string, errorLog string) bool {
+	ignoredErrorForPodNamePrefixesEnv := os.Getenv("IGNORED_ERROR_FOR_POD_NAME_PREFIXES")
+	if ignoredErrorForPodNamePrefixesEnv == "" {
+		return false
+	}
+
+	podErrorsMap := make(map[string][]interface{})
+	json.Unmarshal([]byte(ignoredErrorForPodNamePrefixesEnv), &podErrorsMap)
+
+	if len(podErrorsMap[podName]) == 0 {
+		return false
+	}
+
+	for _, ignoredError := range podErrorsMap[podName] {
+		if (strings.Contains(errorLog, ignoredError.(string))) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func isWatchedNamespace(namespace string) bool {
 	watchedNamespacesEnv := os.Getenv("WATCHED_NAMESPACES")
 	if watchedNamespacesEnv == "" {
