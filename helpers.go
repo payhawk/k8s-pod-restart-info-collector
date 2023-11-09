@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"encoding/json"
 	"os"
 	"sort"
 	"strconv"
@@ -58,13 +59,13 @@ func isIgnoredPod(name string) bool {
 }
 
 func isIgnoredErrorForPod(podName string, errorLog string) bool {
-	ignoredErrorForPodNamePrefixesEnv := os.Getenv("IGNORED_ERROR_FOR_POD_NAME_PREFIXES")
-	if ignoredErrorForPodNamePrefixesEnv == "" {
+	ignoredErrorsForPodNamePrefixesEnv := os.Getenv("IGNORED_ERRORS_FOR_POD_NAME_PREFIXES")
+	if ignoredErrorsForPodNamePrefixesEnv == "" {
 		return false
 	}
 
 	podErrorsMap := make(map[string][]interface{})
-	json.Unmarshal([]byte(ignoredErrorForPodNamePrefixesEnv), &podErrorsMap)
+	json.Unmarshal([]byte(ignoredErrorsForPodNamePrefixesEnv), &podErrorsMap)
 
 	if len(podErrorsMap[podName]) == 0 {
 		return false
