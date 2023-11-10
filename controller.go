@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"sort"
-	"strings"
 	"time"
 
 	v1 "k8s.io/api/core/v1"
@@ -265,9 +264,7 @@ func (c *Controller) handlePod(pod *v1.Pod) error {
 			return err
 		}
 
-		logLines := strings.Split(containerLogs, "\n")
-		lastLogLine := logLines[len(logLines)-1]
-		if isIgnoredErrorForPod(pod.Name, lastLogLine) {
+		if isIgnoredErrorForPod(pod.Name, lastLogLine(containerLogs)) {
 			continue
 		}
 

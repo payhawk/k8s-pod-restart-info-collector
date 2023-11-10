@@ -67,17 +67,31 @@ func isIgnoredErrorForPod(podName string, errorLog string) bool {
 	podErrorsMap := make(map[string][]interface{})
 	json.Unmarshal([]byte(ignoredErrorsForPodNamePrefixesEnv), &podErrorsMap)
 
-	if len(podErrorsMap[podName]) == 0 {
-		return false
-	}
-
-	for _, ignoredError := range podErrorsMap[podName] {
-		if (strings.Contains(errorLog, ignoredError.(string))) {
-			return true
+	for key, errors := range podErrorsMap {
+		if strings.HasPrefix(podName, key) {
+			for _, ignoredError := range errors {
+				if strings.Contains(errorLog, ignoredError.(string)) {
+					klog.Infof("Ignore: pod %s has ignored error: %s\n", podName, ignoredError)
+					return true
+				}
+			}
 		}
 	}
 
 	return false
+}
+
+func lastLogLine(logs string) string {
+	logLines := strings.Split(logs, "\n")
+
+	for i := 1; i <= len(logLines); i++ {
+		lastLogLine := logLines[len(logLines)-i]
+		if lastLogLine != "" {
+			return lastLogLine;
+		}
+	}
+
+	return ""
 }
 
 func isWatchedNamespace(namespace string) bool {
