@@ -67,7 +67,7 @@ func isIgnoredErrorForPod(podName string, errorLog string) bool {
 	podErrorsMap := make(map[string][]interface{})
 	err := json.Unmarshal([]byte(ignoredErrorsForPodNamePrefixesEnv), &podErrorsMap)
 	if err != nil {
-		klog.Infof("Failed to load IGNORED_ERRORS_FOR_POD_NAME_PREFIXES")
+		klog.Infof("Failed to load IGNORED_ERRORS_FOR_POD_NAME_PREFIXES with error: %s", err)
 		return false
 	}
 
