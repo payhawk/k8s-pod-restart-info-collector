@@ -65,7 +65,11 @@ func isIgnoredErrorForPod(podName string, errorLog string) bool {
 	}
 
 	podErrorsMap := make(map[string][]interface{})
-	json.Unmarshal([]byte(ignoredErrorsForPodNamePrefixesEnv), &podErrorsMap)
+	err := json.Unmarshal([]byte(ignoredErrorsForPodNamePrefixesEnv), &podErrorsMap)
+	if err != nil {
+		klog.Infof("Failed to load IGNORED_ERRORS_FOR_POD_NAME_PREFIXES")
+		return false
+	}
 
 	for key, errors := range podErrorsMap {
 		if strings.HasPrefix(podName, key) {
@@ -81,7 +85,7 @@ func isIgnoredErrorForPod(podName string, errorLog string) bool {
 	return false
 }
 
-func lastLogLine(logs string) string {
+func lastNonEmptyLogLine(logs string) string {
 	logLines := strings.Split(logs, "\n")
 
 	for i := 1; i <= len(logLines); i++ {
