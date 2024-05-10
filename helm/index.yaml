@@ -9,6 +9,6 @@ entries:
     name: k8s-pod-restart-info-collector
     type: application
     urls:
-    - https://payhawk.github.io/k8s-pod-restart-info-collector/helm/k8s-pod-restart-info-collector-1.7.0.tgz
-    version: 1.7.0
+    - https://payhawk.github.io/k8s-pod-restart-info-collector/helm/k8s-pod-restart-info-collector-1.8.0.tgz
+    version: 1.8.0
 generated: "2023-05-19T19:24:16.817579+03:00"
